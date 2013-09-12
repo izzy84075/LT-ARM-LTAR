@@ -130,7 +130,7 @@
           <Target>
             <UseTarget>1</UseTarget>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
-            <RunToMain>0</RunToMain>
+            <RunToMain>1</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
             <RestoreWatchpoints>1</RestoreWatchpoints>
             <RestoreMemoryDisplay>1</RestoreMemoryDisplay>
@@ -442,6 +442,11 @@
               <FileType>5</FileType>
               <FilePath>.\CMSIS\Basic+StdPeriph\stm32f30x_tim.h</FilePath>
             </File>
+            <File>
+              <FileName>stm32f30x_misc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\CMSIS\Basic+StdPeriph\stm32f30x_misc.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -453,29 +458,19 @@
               <FilePath>.\main.cpp</FilePath>
             </File>
             <File>
-              <FileName>LTTO_IRRX.cpp</FileName>
+              <FileName>LTAR_Ser_Block.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>.\LTTO_IRRX.cpp</FilePath>
+              <FilePath>.\LTAR_Ser_Block.cpp</FilePath>
             </File>
             <File>
-              <FileName>LTTO_IRTX.cpp</FileName>
+              <FileName>LTAR_Ser_Rx.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>.\LTTO_IRTX.cpp</FilePath>
+              <FilePath>.\LTAR_Ser_Rx.cpp</FilePath>
             </File>
             <File>
-              <FileName>LTTO_IRTX.hpp</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\LTTO_IRTX.hpp</FilePath>
-            </File>
-            <File>
-              <FileName>LTTO_IRRX.hpp</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\LTTO_IRRX.hpp</FilePath>
-            </File>
-            <File>
-              <FileName>LTTO_IR.hpp</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\LTTO_IR.hpp</FilePath>
+              <FileName>LTAR_Ser_Tx.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\LTAR_Ser_Tx.cpp</FilePath>
             </File>
           </Files>
         </Group>

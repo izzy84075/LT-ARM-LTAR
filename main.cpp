@@ -1,48 +1,74 @@
 #include "stm32f30x.h"
 
-#include "LTTO_IRRX.hpp"
-#include "LTTO_IRTX.hpp"
+#include "LTAR_Ser_Rx.hpp"
+#include "LTAR_Ser_Tx.hpp"
+#include "LTAR_Ser_Block.hpp"
 
 int main(void);
-void IRON(void);
-void IROFF(void);
+void SERON(void);
+void SEROFF(void);
 
-LTTO_IRRX dome;
-LTTO_IRTX barrel(&IRON, &IROFF);
 unsigned int delay;
 bool fire;
 
 GPIO_InitTypeDef GPIO_InitStructure;
-TIM_TimeBaseInitTypeDef   TIM_TimeBaseStructure;
-TIM_OCInitTypeDef         TIM_OCInitStructure;
+TIM_ICInitTypeDef  TIM_ICInitStructure;
+NVIC_InitTypeDef NVIC_InitStructure;
+
+__IO uint16_t IC2Value = 0;
+__IO uint16_t DutyCycle = 0;
+__IO uint32_t Frequency = 0;
+RCC_ClocksTypeDef RCC_Clocks;
+
+LTAR_Ser_Rx SerRx(3200, 4800, 1600, 2400);
+LTAR_Ser_Tx SerTx(&SERON, &SEROFF);
 
 extern "C" {
 	void SysTick_Handler(void) {
-		barrel.LTTO_IRTX_1msTick();
-		
-		if(delay) {
-			delay--;
+		SerTx.tick2xActiveFreq();
+	}
+	
+	void TIM2_IRQHandler(void)
+	{
+		RCC_GetClocksFreq(&RCC_Clocks);
+
+		/* Clear TIM2 Capture compare interrupt pending bit */
+		TIM_ClearITPendingBit(TIM2, TIM_IT_CC2);
+
+		/* Get the Input Capture value */
+		IC2Value = TIM_GetCapture2(TIM2);
+
+		if (IC2Value != 0)
+		{
+			/* Duty cycle computation */
+			DutyCycle = (TIM_GetCapture1(TIM2) * 100) / IC2Value;
+
+			/* Frequency computation 
+			   TIM2 counter clock = (RCC_Clocks.HCLK_Frequency)/2 */
+
+			Frequency = RCC_Clocks.HCLK_Frequency / IC2Value;
 		}
-		if(!delay) {
-			fire = true;
+		else
+		{
+			DutyCycle = 0;
+			Frequency = 0;
 		}
-		
+		SerRx.newSample(Frequency);
 	}
 }
 
 int main(void) {
 	//SystemInit();
-	SysTick_Config(SystemCoreClock / 1000);
+	SysTick_Config(SystemCoreClock / 8800);
 	
 	//Turn on the GPIO clock
-	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
 	
-	//Turn on TIM4's clock
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+	/* TIM2 clock enable */
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
 	
-	//Set the AF mode on PB6
-	GPIO_PinAFConfig(GPIOB, GPIO_PinSource6, GPIO_AF_2);
+	/* GPIOA clock enable */
+	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
 	
 	//Set up our GPIO pins
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_15;
@@ -52,76 +78,69 @@ int main(void) {
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 	
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-	//GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
-	//GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_DOWN;
-	GPIO_Init(GPIOB, &GPIO_InitStructure);
+	/* TIM2 chennel2 configuration : PA.01 */
+	GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_1;
+	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP ;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
 	
+	/* Connect TIM pin to AF1 */
+	GPIO_PinAFConfig(GPIOA, GPIO_PinSource1, GPIO_AF_1);
+	/* Enable the TIM2 global Interrupt */
+	NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);
 	
-	TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
-  TIM_OCStructInit(&TIM_OCInitStructure);
+	TIM_ICInitStructure.TIM_Channel = TIM_Channel_2;
+	TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Rising;
+	TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
+	TIM_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;
+	TIM_ICInitStructure.TIM_ICFilter = 0x0;
 	
-	unsigned int Period  = (SystemCoreClock / 38000 ) - 1;
-	unsigned int Channel1Pulse = (uint16_t) (((uint32_t) 5 * (Period - 1)) / 10);
+	TIM_PWMIConfig(TIM2, &TIM_ICInitStructure);
 	
-	//Set up the timer
-	TIM_TimeBaseStructure.TIM_Prescaler = 0;
-	TIM_TimeBaseStructure.TIM_Period = Period;
-	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
-	TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
-	
-	TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
-	
-	TIM_PrescalerConfig(TIM4, 0, TIM_PSCReloadMode_Immediate);
-	
-	//Set up the timer's output channel
-	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
-	//TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Toggle;
-  TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-  TIM_OCInitStructure.TIM_Pulse = Channel1Pulse;
-  TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
-	
-	TIM_OC1Init(TIM4, &TIM_OCInitStructure);
-	
-	TIM_OC1PreloadConfig(TIM4, TIM_OCPreload_Disable);
-	
-	/* TIM4 counter enable */
-  TIM_Cmd(TIM4, ENABLE);
+	/* Select the TIM2 Input Trigger: TI2FP2 */
+	TIM_SelectInputTrigger(TIM2, TIM_TS_TI2FP2);
 
-  /* TIM4 Main Output Enable */
-  //TIM_CtrlPWMOutputs(TIM4, ENABLE);
+	/* Select the slave Mode: Reset Mode */
+	TIM_SelectSlaveMode(TIM2, TIM_SlaveMode_Reset);
+	TIM_SelectMasterSlaveMode(TIM2,TIM_MasterSlaveMode_Enable);
+
+	/* TIM enable counter */
+	TIM_Cmd(TIM2, ENABLE);
+
+	/* Enable the CC2 Interrupt Request */
+	TIM_ITConfig(TIM2, TIM_IT_CC2, ENABLE);
 	
-	GPIOA->BRR = 0xFFFF;
+	LTAR_Ser_Block_t block;
+	block.appendByte(0x01);
+	block.appendByte(0x02);
+	block.appendByte(0x03);
+	block.appendByte(0x04);
+	block.appendByte(0x05);
+	block.appendChecksum();
 	
-	dome.newSample(12, 24);
-	dome.newSample(12, 8);
-	dome.newSample(4, 8);
-	dome.newSample(4, 8);
-	dome.newSample(4, 8);
-	dome.newSample(4, 8);
-	dome.newSample(4, 8);
-	dome.newSample(4, 8);
-	dome.newSample(4, 200);
-	
-	LTTO_IR temp = dome.getSignature();
+	LTAR_Ser_Rx_Status_t status;
 	
 	while(1) {
-		if(fire) {
-			fire = false;
-			if(!barrel.signatureInProgress()) {
-				barrel.queueSignature(temp);
-			}
-			delay = 1000;
+		if(!SerTx.blockInProgress()) {
+			SerTx.queue(block);
+		}
+		status = SerRx.getStatus();
+		
+		if(status.flags.blockReady) {
+			SerRx.getBlock();
+			SerRx.clearBuffer();
 		}
 	}
 }
 
-void IRON(void) {
+void SERON(void) {
 	GPIOB->BSRR = GPIO_Pin_15;
 }
 
-void IROFF(void) {
+void SEROFF(void) {
 	GPIOB->BRR = GPIO_Pin_15;
 }
