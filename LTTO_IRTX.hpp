@@ -17,7 +17,7 @@ class LTTO_IRTX {
 		unsigned int dataCounter;
 		bool busy;
 		void (*LEDON)(void);
-		void (*LEDOFF)();
+		void (*LEDOFF)(void);
 };
 
 #endif
