@@ -1,0 +1,3 @@
+[submodule "st-lib"]
+	path = st-lib
+	url = git@gitlab.meldaire.net:izzy84075/st-lib.git

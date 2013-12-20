@@ -1,4 +1,4 @@
-#include "CMSIS\Basic+StdPeriph\stm32f30x.h"
+#include "st-lib\CMSIS\Basic+StdPeriph\stm32f30x.h"
 
 #include "LTAR_Ser_Rx.hpp"
 #include "LTAR_Ser_Tx.hpp"
