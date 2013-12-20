@@ -11,6 +11,7 @@ LTAR_Ser_Rx::LTAR_Ser_Rx(unsigned int activeLower, unsigned int activeUpper, uns
 void LTAR_Ser_Rx::reset(void) {
 	status.data = 0;
 	timeout = 0;
+	clearBuffer();
 }
 
 bool LTAR_Ser_Rx::newSample(unsigned int frequency) {

@@ -1,4 +1,4 @@
-#include "stm32f30x.h"
+#include "CMSIS\Basic+StdPeriph\stm32f30x.h"
 
 #include "LTAR_Ser_Rx.hpp"
 #include "LTAR_Ser_Tx.hpp"
@@ -53,7 +53,12 @@ extern "C" {
 			DutyCycle = 0;
 			Frequency = 0;
 		}
-		SerRx.newSample(Frequency);
+		if(Frequency > 1500 && Frequency < 2500) {
+			GPIOB->BSRR |= GPIO_Pin_8;
+		} else if(Frequency > 3500 && Frequency < 4500) {
+			GPIOB->BRR |= GPIO_Pin_8;
+		}
+		//SerRx.newSample(Frequency);
 	}
 }
 
@@ -71,7 +76,7 @@ int main(void) {
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
 	
 	//Set up our GPIO pins
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_15;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_15 + GPIO_Pin_8 + GPIO_Pin_7;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -94,7 +99,7 @@ int main(void) {
 	NVIC_Init(&NVIC_InitStructure);
 	
 	TIM_ICInitStructure.TIM_Channel = TIM_Channel_2;
-	TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Rising;
+	TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Falling;
 	TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
 	TIM_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;
 	TIM_ICInitStructure.TIM_ICFilter = 0x0;
@@ -121,6 +126,42 @@ int main(void) {
 	block.appendByte(0x04);
 	block.appendByte(0x05);
 	block.appendChecksum();
+	
+	for(int i = 30; i != 0; i--) {
+		SerRx.newSample(2000);
+	}
+	
+	//Start bit
+	SerRx.newSample(4000);
+	//Data bits
+	SerRx.newSample(4000);
+	SerRx.newSample(2000);
+	SerRx.newSample(4000);
+	SerRx.newSample(4000);
+	SerRx.newSample(4000);
+	SerRx.newSample(4000);
+	SerRx.newSample(4000);
+	SerRx.newSample(4000);
+	//Stop bits
+	SerRx.newSample(2000);
+	SerRx.newSample(2000);
+	
+	//Start bit
+	SerRx.newSample(4000);
+	//Data bits
+	SerRx.newSample(4000);
+	SerRx.newSample(4000);
+	SerRx.newSample(4000);
+	SerRx.newSample(4000);
+	SerRx.newSample(4000);
+	SerRx.newSample(4000);
+	SerRx.newSample(4000);
+	SerRx.newSample(4000);
+	//Stop bits
+	SerRx.newSample(2000);
+	SerRx.newSample(2000);
+	
+	while(0);
 	
 	LTAR_Ser_Rx_Status_t status;
 	
