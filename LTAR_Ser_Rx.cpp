@@ -30,10 +30,7 @@ bool LTAR_Ser_Rx::tick1ms(void) {
 	if(timeout) {
 		timeout -= 1;
 		if(timeout == 0) {
-			startBitDetected = false;
-			captureBuffer.reset();
-			inactiveCounter = 0;
-			status.data = 0;
+			reset();
 			status.flags.carrierLost = true;
 			return true;
 		}
@@ -41,8 +38,14 @@ bool LTAR_Ser_Rx::tick1ms(void) {
 	return false;
 }
 
-LTAR_Ser_Block LTAR_Ser_Rx::getBlock(void) {
-	return captureBuffer;
+bool LTAR_Ser_Rx::getBlock(LTAR_Ser_Block &block) {
+	if(status.flags.blockReady) {
+		block = captureBuffer;
+		clearBuffer();
+		return true;
+	} else {
+		return false;
+	}
 }
 
 void LTAR_Ser_Rx::clearBuffer(void) {

@@ -5,10 +5,11 @@
 
 class LTAR_Ser_Tx {
 	public:
+		bool enable;
+		
 		LTAR_Ser_Tx( void (*SERON)(void), void (*SEROFF)(void));
 		void reset(void);
 		bool queue(LTAR_Ser_Block block);
-		bool blockInProgress(void);
 		void tick2xActiveFreq(void);
 	private:
 		LTAR_Ser_Block_t workingBuffer;
@@ -22,6 +23,7 @@ class LTAR_Ser_Tx {
 		
 		bool sendInactive(void);
 		bool sendActive(void);
+		void clear(void);
 		
 		void (*ON)(void);
 		void (*OFF)(void);

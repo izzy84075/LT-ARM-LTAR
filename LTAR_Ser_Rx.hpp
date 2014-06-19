@@ -22,8 +22,7 @@ class LTAR_Ser_Rx {
 		bool newSample(unsigned int frequency);
 		LTAR_Ser_Rx_Status_t getStatus(void);
 		bool tick1ms(void);
-		LTAR_Ser_Block getBlock(void);
-		void clearBuffer(void);
+		bool getBlock(LTAR_Ser_Block &block);
 	private:
 		LTAR_Ser_Block_t captureBuffer;
 		
@@ -43,6 +42,7 @@ class LTAR_Ser_Rx {
 		
 		bool waitForSync(unsigned int frequency);
 		bool processAudio(unsigned int frequency);
+		void clearBuffer(void);
 };
 
 #endif

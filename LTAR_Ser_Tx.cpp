@@ -4,12 +4,18 @@ LTAR_Ser_Tx::LTAR_Ser_Tx( void (*SERON)(void), void (*SEROFF)(void)) {
 	ON = SERON;
 	OFF = SEROFF;
 	
+	
 	reset();
 	
 	(*OFF)();
 }
 
 void LTAR_Ser_Tx::reset(void) {
+	enable = false;
+	clear();
+}
+
+void LTAR_Ser_Tx::clear(void) {
 	workingBuffer.reset();
 	step = 0;
 	bitCounter = 0;
@@ -24,16 +30,13 @@ bool LTAR_Ser_Tx::queue(LTAR_Ser_Block block) {
 		workingBuffer = block;
 		busy = true;
 		return true;
+	} else {
+		return false;
 	}
-	return false;
-}
-
-bool LTAR_Ser_Tx::blockInProgress(void) {
-	return busy;
 }
 
 void LTAR_Ser_Tx::tick2xActiveFreq(void) {
-	if(busy && readyToTX) {
+	if(busy && readyToTX && enable) {
 		switch(step) {
 			case 0:
 				//Need to send a start bit
@@ -87,8 +90,8 @@ void LTAR_Ser_Tx::tick2xActiveFreq(void) {
 					//Done with an idle bit
 					bitCounter += 1;
 					if(bitCounter > 15) {
-						//Done idling. Reset everything for the next block!
-						reset();
+						//Done idling. Clear everything for the next block!
+						clear();
 					}
 				}
 				break;

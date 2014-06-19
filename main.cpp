@@ -20,7 +20,7 @@ __IO uint16_t DutyCycle = 0;
 __IO uint32_t Frequency = 0;
 RCC_ClocksTypeDef RCC_Clocks;
 
-LTAR_Ser_Rx SerRx(3200, 4800, 1600, 2400);
+LTAR_Ser_Rx SerRx(3800, 4200, 1900, 2100);
 LTAR_Ser_Tx SerTx(&SERON, &SEROFF);
 
 extern "C" {
@@ -119,6 +119,8 @@ int main(void) {
 	/* Enable the CC2 Interrupt Request */
 	TIM_ITConfig(TIM2, TIM_IT_CC2, ENABLE);
 	
+	LTAR_Ser_Block_t RXblock;
+	
 	LTAR_Ser_Block_t block;
 	block.appendByte(0x01);
 	block.appendByte(0x02);
@@ -163,18 +165,10 @@ int main(void) {
 	
 	while(0);
 	
-	LTAR_Ser_Rx_Status_t status;
-	
 	while(1) {
-		if(!SerTx.blockInProgress()) {
-			SerTx.queue(block);
-		}
-		status = SerRx.getStatus();
+		SerTx.queue(block);
 		
-		if(status.flags.blockReady) {
-			SerRx.getBlock();
-			SerRx.clearBuffer();
-		}
+		SerRx.getBlock(RXblock);
 	}
 }
 
