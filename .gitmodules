@@ -1,3 +1,6 @@
 [submodule "st-lib"]
 	path = st-lib
 	url = git@gitlab.meldaire.net:super-software-consortium/st-lib.git
+[submodule "circular-buffer"]
+	path = circular-buffer
+	url = git@gitlab.meldaire.net:super-software-consortium/circular-buffer.git
