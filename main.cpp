@@ -1,7 +1,6 @@
 #include "st-lib\CMSIS\Basic+StdPeriph\stm32f30x.h"
 
-#include "LTAR_Ser_Rx.hpp"
-#include "LTAR_Ser_Tx.hpp"
+#include "LTAR_Ser.hpp"
 #include "LTAR_Ser_Block.hpp"
 
 int main(void);
@@ -20,12 +19,11 @@ __IO uint16_t DutyCycle = 0;
 __IO uint32_t Frequency = 0;
 RCC_ClocksTypeDef RCC_Clocks;
 
-LTAR_Ser_Rx SerRx(3800, 4200, 1900, 2100);
-LTAR_Ser_Tx SerTx(&SERON, &SEROFF);
+LTAR_Ser Ser(&SERON, &SEROFF);
 
 extern "C" {
 	void SysTick_Handler(void) {
-		SerTx.tick2xActiveFreq();
+		Ser.tick2xActiveFreq();
 	}
 	
 	void TIM2_IRQHandler(void)
@@ -130,45 +128,45 @@ int main(void) {
 	block.appendChecksum();
 	
 	for(int i = 30; i != 0; i--) {
-		SerRx.newSample(2000);
+		Ser.newSample(2000);
 	}
 	
 	//Start bit
-	SerRx.newSample(4000);
+	Ser.newSample(4000);
 	//Data bits
-	SerRx.newSample(4000);
-	SerRx.newSample(2000);
-	SerRx.newSample(4000);
-	SerRx.newSample(4000);
-	SerRx.newSample(4000);
-	SerRx.newSample(4000);
-	SerRx.newSample(4000);
-	SerRx.newSample(4000);
+	Ser.newSample(4000);
+	Ser.newSample(2000);
+	Ser.newSample(4000);
+	Ser.newSample(4000);
+	Ser.newSample(4000);
+	Ser.newSample(4000);
+	Ser.newSample(4000);
+	Ser.newSample(4000);
 	//Stop bits
-	SerRx.newSample(2000);
-	SerRx.newSample(2000);
+	Ser.newSample(2000);
+	Ser.newSample(2000);
 	
 	//Start bit
-	SerRx.newSample(4000);
+	Ser.newSample(4000);
 	//Data bits
-	SerRx.newSample(4000);
-	SerRx.newSample(4000);
-	SerRx.newSample(4000);
-	SerRx.newSample(4000);
-	SerRx.newSample(4000);
-	SerRx.newSample(4000);
-	SerRx.newSample(4000);
-	SerRx.newSample(4000);
+	Ser.newSample(4000);
+	Ser.newSample(4000);
+	Ser.newSample(4000);
+	Ser.newSample(4000);
+	Ser.newSample(4000);
+	Ser.newSample(4000);
+	Ser.newSample(4000);
+	Ser.newSample(4000);
 	//Stop bits
-	SerRx.newSample(2000);
-	SerRx.newSample(2000);
+	Ser.newSample(2000);
+	Ser.newSample(2000);
 	
 	while(0);
 	
 	while(1) {
-		SerTx.queue(block);
+		Ser.queueBlock(block);
 		
-		SerRx.getBlock(RXblock);
+		Ser.blockWaiting(RXblock);
 	}
 }
 

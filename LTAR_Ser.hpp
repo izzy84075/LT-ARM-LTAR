@@ -11,6 +11,7 @@ typedef union {
 		unsigned char RX_buffer_overrun:1;
 		unsigned char TX_Normal_buffer_overrun:1;
 		unsigned char TX_HighPriority_buffer_overrun:1;
+		unsigned char Synced:1;
 	} flags;
 	
 	unsigned char data;
@@ -22,6 +23,7 @@ class LTAR_Ser {
 		
 		//Manager functions
 		void reset(void);
+		LTAR_Ser_Status_t getStatus(void);
 		
 		//TX functions
 		bool queueBlock(LTAR_Ser_Block_t block, bool highPriority = false);

@@ -1,19 +1,27 @@
 #include "LTAR_Ser.hpp"
 
+void LTAR_Ser::reset(void) {
+	RX.reset();
+	TX.reset();
+	RX_buffer.reset();
+	TX_Normal_buffer.reset();
+	TX_HighPriority_buffer.reset();
+}
+
+LTAR_Ser_Status_t LTAR_Ser::getStatus(void) {
+	return status;
+}
+
 bool LTAR_Ser::queueBlock(LTAR_Ser_Block_t block, bool highPriority) {
 	bool succeeded = false;
 	
 	if(synced()) {
 		if(highPriority) {
 			succeeded = TX_HighPriority_buffer.insert(block);
-			if(!succeeded) {
-				status.flags.TX_HighPriority_buffer_overrun = true;
-			}
+			status.flags.TX_HighPriority_buffer_overrun = !succeeded;
 		} else {
 			succeeded = TX_Normal_buffer.insert(block);
-			if(!succeeded) {
-				status.flags.TX_Normal_buffer_overrun = true;
-			}
+			status.flags.TX_Normal_buffer_overrun = !succeeded;
 		}
 	}
 	
@@ -44,13 +52,12 @@ bool LTAR_Ser::newSample(unsigned int frequency) {
 	bool somethingHappened = RX.newSample(frequency);
 	
 	if(synced()) {
+		status.flags.Synced = true;
 		TX.enable = true;
 		
 		LTAR_Ser_Block_t temp;
 		if(RX.getBlock(temp)) {
-			if(!RX_buffer.insert(temp)) {
-				status.flags.RX_buffer_overrun = true;
-			}
+			status.flags.RX_buffer_overrun = !RX_buffer.insert(temp);
 		}
 	}
 	
@@ -61,10 +68,8 @@ bool LTAR_Ser::tick1ms(void) {
 	bool lostSync = RX.tick1ms();
 	
 	if(lostSync) {
-		TX.reset();
-		RX_buffer.reset();
-		TX_Normal_buffer.reset();
-		TX_HighPriority_buffer.reset();
+		reset();
+		status.data = 0;
 	}
 	
 	return lostSync;

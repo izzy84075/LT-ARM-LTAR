@@ -26,7 +26,7 @@ void LTAR_Ser_Tx::clear(void) {
 }
 
 bool LTAR_Ser_Tx::queue(LTAR_Ser_Block block) {
-	if(!busy) {
+	if(!busy && enable) {
 		workingBuffer = block;
 		busy = true;
 		return true;
