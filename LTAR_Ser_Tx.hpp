@@ -1,7 +1,7 @@
 #include "LTAR_Ser_Block.hpp"
 
-#ifndef LTAR_Ser_Tx_H
-#define LTAR_Ser_Tx_H
+#ifndef LTAR_SER_TX_H
+#define LTAR_SER_TX_H
 
 class LTAR_Ser_Tx {
 	public:
