@@ -438,6 +438,11 @@
               <FileType>8</FileType>
               <FilePath>.\LTAR_Ser_Block.cpp</FilePath>
             </File>
+            <File>
+              <FileName>LTAR_Ser.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\LTAR_Ser.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -489,14 +494,14 @@
               <FilePath>.\st-lib\CMSIS\Basic+StdPeriph\system_stm32f30x.c</FilePath>
             </File>
             <File>
-              <FileName>stm32f30x.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\st-lib\CMSIS\Basic+StdPeriph\stm32f30x.h</FilePath>
-            </File>
-            <File>
               <FileName>startup_stm32f30x.s</FileName>
               <FileType>2</FileType>
               <FilePath>.\st-lib\CMSIS\Basic+StdPeriph\startup_stm32f30x.s</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f30x.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\st-lib\CMSIS\Basic+StdPeriph\stm32f30x.h</FilePath>
             </File>
             <File>
               <FileName>stm32f30x_exti.c</FileName>

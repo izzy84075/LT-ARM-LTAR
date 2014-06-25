@@ -36,7 +36,7 @@ bool LTAR_Ser_Tx::queue(LTAR_Ser_Block block) {
 }
 
 void LTAR_Ser_Tx::tick2xActiveFreq(void) {
-	if(busy && readyToTX && enable) {
+	if(busy && readyToTX) {
 		switch(step) {
 			case 0:
 				//Need to send a start bit
@@ -97,7 +97,11 @@ void LTAR_Ser_Tx::tick2xActiveFreq(void) {
 				break;
 		}
 	} else {
-		readyToTX = sendInactive();
+		if(enable) {
+			readyToTX = sendInactive();
+		} else {
+			(*OFF)();
+		}
 	}
 }
 
