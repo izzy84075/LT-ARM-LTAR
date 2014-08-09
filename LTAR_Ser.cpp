@@ -31,17 +31,19 @@ bool LTAR_Ser::queueBlock(LTAR_Ser_Block_t block, bool highPriority) {
 void LTAR_Ser::tick2xActiveFreq(void) {
 	LTAR_Ser_Block_t temp;
 	
-	if(TX_HighPriority_buffer.getData(temp)) {
-		if(TX.queue(temp)) {
-			TX_HighPriority_buffer.advance();
-		}
-	} else if(TX_Normal_buffer.getData(temp)) {
-		if(TX.queue(temp)) {
-			TX_Normal_buffer.advance();
+	TX.tick2xActiveFreq();
+	
+	if(!TX.isBusy()) {
+		if(TX_HighPriority_buffer.getData(temp)) {
+			if(TX.queue(temp)) {
+				TX_HighPriority_buffer.advance();
+			}
+		} else if(TX_Normal_buffer.getData(temp)) {
+			if(TX.queue(temp)) {
+				TX_Normal_buffer.advance();
+			}
 		}
 	}
-	
-	TX.tick2xActiveFreq();
 }
 
 bool LTAR_Ser::blockWaiting(LTAR_Ser_Block_t &waitingBlock) {

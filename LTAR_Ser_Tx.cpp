@@ -3,6 +3,7 @@
 LTAR_Ser_Tx::LTAR_Ser_Tx( void (*SERON)(void), void (*SEROFF)(void)) {
 	ON = SERON;
 	OFF = SEROFF;
+	nextState = false;
 	
 	
 	reset();
@@ -25,6 +26,10 @@ void LTAR_Ser_Tx::clear(void) {
 	busy = false;
 }
 
+bool LTAR_Ser_Tx::isBusy(void) {
+	return busy;
+}
+
 bool LTAR_Ser_Tx::queue(LTAR_Ser_Block block) {
 	if(!busy && enable) {
 		workingBuffer = block;
@@ -36,6 +41,13 @@ bool LTAR_Ser_Tx::queue(LTAR_Ser_Block block) {
 }
 
 void LTAR_Ser_Tx::tick2xActiveFreq(void) {
+	//Handle all the I/O at the beginning of the ISR
+	if(nextState) {
+		(*ON)();
+	} else {
+		(*OFF)();
+	}
+	//Process what state we'll need to be in for next time the ISR runs.
 	if(busy && readyToTX) {
 		switch(step) {
 			case 0:
@@ -100,7 +112,8 @@ void LTAR_Ser_Tx::tick2xActiveFreq(void) {
 		if(enable) {
 			readyToTX = sendInactive();
 		} else {
-			(*OFF)();
+			//(*OFF)();
+			nextState = false;
 		}
 	}
 }
@@ -111,11 +124,13 @@ bool LTAR_Ser_Tx::sendInactive(void) {
 	switch(substep) {
 		case 0:
 			//Start the high side of the bit
-			(*ON)();
+			//(*ON)();
+			nextState = true;
 			break;
 		case 2:
 			//Start the low side of the bit
-			(*OFF)();
+			//(*OFF)();
+			nextState = false;
 			break;
 		case 3:
 			//End of a bit
@@ -138,11 +153,13 @@ bool LTAR_Ser_Tx::sendActive(void) {
 	switch(substep) {
 		case 0:
 			//Start the high side of the bit
-			(*ON)();
+			//(*ON)();
+			nextState = true;
 			break;
 		case 1:
 			//Start the low side of the bit
-			(*OFF)();
+			//(*OFF)();
+			nextState = false;
 			isDone = true;
 			break;
 	}

@@ -11,12 +11,14 @@ class LTAR_Ser_Tx {
 		void reset(void);
 		bool queue(LTAR_Ser_Block block);
 		void tick2xActiveFreq(void);
+		bool isBusy(void);
 	private:
 		LTAR_Ser_Block_t workingBuffer;
 		unsigned int step;
 		unsigned int bitCounter;
 		unsigned int byteCounter;
 		unsigned int substep;
+		bool nextState;
 		bool busy;
 		bool nextStep;
 		bool readyToTX;
