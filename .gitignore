@@ -34,3 +34,5 @@ _ReSharper*/
 *.plg
 *.tra
 *.lst
+*.depend
+*.elay
