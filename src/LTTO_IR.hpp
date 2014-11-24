@@ -43,6 +43,11 @@ typedef struct {
 } LTTO_IR;
 
 typedef struct {
+	eLTTO_IR_SIGNATURETYPE sigType;
+	uint8_t data;
+} LTTO_IR_SIGNATURE;
+
+typedef struct {
 	uint8_t data[22];
 	uint8_t runningChecksum;
 	uint8_t size;
