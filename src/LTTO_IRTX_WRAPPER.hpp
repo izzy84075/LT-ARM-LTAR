@@ -7,7 +7,7 @@
 class LTTO_IRTX_WRAPPER {
 	public:
 		LTTO_IRTX_WRAPPER( void (*IRLEDON)(void), void (*IRLEDOFF)(void)) : TX(IRLEDON, IRLEDOFF) {};
-		bool queueSingleSignature(eLTTO_IR_SIGNATURETYPE sigType, uint8_t data);
+		bool queueSingleSignature(eLTTO_IR_SIGNATURETYPE sigType, uint16_t data);
 		bool queueMultibyteMessage(LTTO_IR_MULTIBYTE data);
 		bool signatureInProgress(void);
 		bool multibyteInProgress(void);

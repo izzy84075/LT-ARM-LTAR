@@ -89,7 +89,7 @@ typedef struct {
 				break;
 		}
 		
-		output->data = (uint8_t)(data);
+		output->data = data;
 		
 		return true;
 	}
@@ -97,7 +97,7 @@ typedef struct {
 
 typedef struct {
 	eLTTO_IR_SIGNATURETYPE sigType;
-	uint8_t data;
+	uint16_t data;
 	
 	void convert(LTTO_IR *output) {
 		output->data = 0;

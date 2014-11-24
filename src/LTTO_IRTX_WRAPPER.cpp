@@ -1,7 +1,6 @@
 #include "LTTO_IRTX_WRAPPER.hpp"
 
-bool LTTO_IRTX_WRAPPER::queueSingleSignature(eLTTO_IR_SIGNATURETYPE sigType, uint8_t data) {
-	uint16_t tempdata = data & 0x00FF;
+bool LTTO_IRTX_WRAPPER::queueSingleSignature(eLTTO_IR_SIGNATURETYPE sigType, uint16_t data) {
 	if(!signatureInProgress()) {
 		LTTO_IR temp;
 		
@@ -25,6 +24,7 @@ bool LTTO_IRTX_WRAPPER::queueSingleSignature(eLTTO_IR_SIGNATURETYPE sigType, uin
 				temp.headerType = eLTTO_IR_HEADERTYPE_NORMAL;
 				temp.bitCount = eLTTO_IR_BITCOUNT_9;
 				temp.SFP = eLTTO_IR_SFP_SHORT;
+				data &= 0x00FF;
 				break;
 			case eLTTO_IR_SIGNATURETYPE_MULTIBYTE_DATA:
 				temp.headerType = eLTTO_IR_HEADERTYPE_NORMAL;
@@ -35,11 +35,11 @@ bool LTTO_IRTX_WRAPPER::queueSingleSignature(eLTTO_IR_SIGNATURETYPE sigType, uin
 				temp.headerType = eLTTO_IR_HEADERTYPE_NORMAL;
 				temp.bitCount = eLTTO_IR_BITCOUNT_9;
 				temp.SFP = eLTTO_IR_SFP_LONG;
-				tempdata |= 0x0100;
+				data |= 0x0100;
 				break;
 		}
 		
-		temp.data = tempdata;
+		temp.data = data;
 		
 		TX.queueSignature(temp);
 		
