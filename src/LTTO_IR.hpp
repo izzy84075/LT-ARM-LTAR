@@ -32,7 +32,7 @@ typedef struct {
 	eLTTO_IR_HEADERTYPE headerType;
 	eLTTO_IR_BITCOUNT bitCount;
 	eLTTO_IR_SFP SFP;
-	unsigned int data;
+	uint16_t data;
 	
 	void reset(void) {
 		headerType = eLTTO_IR_HEADERTYPE_NORMAL;
