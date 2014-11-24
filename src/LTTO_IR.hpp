@@ -2,6 +2,15 @@
 #define LTTO_IR_H
 
 typedef enum {
+	eLTTO_IR_SIGNATURETYPE_LTTO_BEACON,
+	eLTTO_IR_SIGNATURETYPE_LTAR_BEACON,
+	eLTTO_IR_SIGNATURETYPE_TAG,
+	eLTTO_IR_SIGNATURETYPE_MULTIBYTE_PTYPE,
+	eLTTO_IR_SIGNATURETYPE_MULTIBYTE_DATA,
+	eLTTO_IR_SIGNATURETYPE_MULTIBYTE_CSUM
+} eLTTO_IR_SIGNATURETYPE;
+
+typedef enum {
 	eLTTO_IR_HEADERTYPE_NORMAL = 0x00,
 	eLTTO_IR_HEADERTYPE_BEACON = 0x01
 } eLTTO_IR_HEADERTYPE;
@@ -32,5 +41,25 @@ typedef struct {
 		data = 0;
 	}
 } LTTO_IR;
+
+typedef struct {
+	uint8_t data[22];
+	uint8_t runningChecksum;
+	uint8_t size;
+	
+	void reset(void) {
+		size = 0;
+	}
+	
+	bool appendByte(uint8_t what) {
+		if(size < 23) {
+			data[size] = what;
+			runningChecksum += what;
+			size++
+			return true;
+		}
+		return false;
+	}
+} LTTO_IR_MULTIBYTE;
 
 #endif
