@@ -4,7 +4,7 @@ LTTO_IRRX::LTTO_IRRX(void) {
 	reset();
 }
 
-eLTTO_IRRX_PACKETREADY LTTO_IRRX::LTTO_IRRX_1msTick(void) {
+void LTTO_IRRX::LTTO_IRRX_1msTick(void) {
 	if(multibyteBuffer.size && !multibyteComplete) {
 		//If we've started receiving a multibyte packet and it's not complete, increment the age.
 		multibyteAge++;
@@ -14,8 +14,6 @@ eLTTO_IRRX_PACKETREADY LTTO_IRRX::LTTO_IRRX_1msTick(void) {
 		//It's been too long since we last received a multibyte component, and it's still not finished.
 		multibyteReset(); //Reset the multibyte buffer.
 	}
-	
-	return signaturesWaiting();
 }
 
 void LTTO_IRRX::reset(void) {

@@ -14,7 +14,7 @@ typedef enum {
 class LTTO_IRRX {
 	public:
 		LTTO_IRRX(void);
-		eLTTO_IRRX_PACKETREADY LTTO_IRRX_1msTick(void);
+		void LTTO_IRRX_1msTick(void);
 		void reset(void);
 		
 		eLTTO_IRRX_PACKETREADY newSample(unsigned int qmsOn, unsigned int qmsOff);
