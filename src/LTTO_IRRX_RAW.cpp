@@ -1,10 +1,10 @@
 #include "LTTO_IRRX.hpp"
 
-LTTO_IRRX::LTTO_IRRX(void) {
+LTTO_IRRX_RAW::LTTO_IRRX_RAW(void) {
 	reset();
 }
 
-bool LTTO_IRRX::newSample(unsigned int qmsOn, unsigned int qmsOff) {
+bool LTTO_IRRX_RAW::newSample(unsigned int qmsOn, unsigned int qmsOff) {
 	
 	if(!signatureWaiting) {
 		switch(step) {
@@ -127,18 +127,18 @@ bool LTTO_IRRX::newSample(unsigned int qmsOn, unsigned int qmsOff) {
 	return signatureWaiting;
 }
 
-bool LTTO_IRRX::isSignatureWaiting(void) {
+bool LTTO_IRRX_RAW::isSignatureWaiting(void) {
 	return signatureWaiting;
 }
 
-LTTO_IR LTTO_IRRX::getSignature(void) {
+LTTO_IR LTTO_IRRX_RAW::getSignature(void) {
 	LTTO_IR tempBuffer = workingBuffer;
 	workingBuffer.reset();
 	signatureWaiting = false;
 	return tempBuffer;
 }
 
-void LTTO_IRRX::reset(void) {
+void LTTO_IRRX_RAW::reset(void) {
 	raw = 0;
 	step = 0;
 	signatureWaiting = false;

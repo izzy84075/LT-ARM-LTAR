@@ -1,11 +1,11 @@
-#include "LTTO_IR.hpp"
+#include "LTTO_IR_RAW.hpp"
 
-#ifndef LTTO_IRRX_H
-#define LTTO_IRRX_H
+#ifndef LTTO_IRRX_RAW_H
+#define LTTO_IRRX_RAW_H
 
-class LTTO_IRRX {
+class LTTO_IRRX_RAW {
 	public:
-		LTTO_IRRX(void);
+		LTTO_IRRX_RAW(void);
 		bool newSample(unsigned int qmsOn, unsigned int qmsOff);
 		bool isSignatureWaiting(void);
 		LTTO_IR getSignature(void);
