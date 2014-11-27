@@ -137,6 +137,11 @@ typedef struct {
 		
 		output->data |= data;
 	}
+	
+	void reset(void) {
+		sigType = eLTTO_IR_SIGNATURETYPE_INVALID;
+		data = 0;
+	}
 } LTTO_IR_SIGNATURE;
 
 typedef struct {
