@@ -10,9 +10,9 @@ class LTTO_IRTX {
 		void LTTO_IRTX_1msTick(void);
 		
 		bool enqueue(eLTTO_IR_SIGNATURETYPE sigType, uint16_t data);
-		bool enqueue(LTTO_IR_SIGNATURE signature);
-		bool enqueue(LTTO_IR_MULTIBYTE structure);
-		bool enqueue(LTTO_IR signature);
+		bool enqueue(LTTO_IR_SIGNATURE *signature);
+		bool enqueue(LTTO_IR_MULTIBYTE *structure);
+		bool enqueue(LTTO_IR *signature);
 		
 		bool isBusy(void);
 	private:

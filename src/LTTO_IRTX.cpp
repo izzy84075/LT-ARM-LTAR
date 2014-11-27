@@ -143,9 +143,9 @@ bool LTTO_IRTX::enqueue(eLTTO_IR_SIGNATURETYPE sigType, uint16_t data) {
 	return enqueue(temp);
 }
 
-bool LTTO_IRTX::enqueue(LTTO_IR_SIGNATURE signature) {
+bool LTTO_IRTX::enqueue(LTTO_IR_SIGNATURE *signature) {
 	if(!isBusy()) {
-		if(signature.convert(workingBuffer)) {
+		if(signature->convert(workingBuffer)) {
 			step = 0;
 			busy = true;
 			return true;
@@ -154,18 +154,18 @@ bool LTTO_IRTX::enqueue(LTTO_IR_SIGNATURE signature) {
 	return false;
 }
 
-bool LTTO_IRTX::enqueue(LTTO_IR_MULTIBYTE structure) {
-	if(!multibyteBuffer.size && structure.size) {
-		multibyteBuffer = structure;
+bool LTTO_IRTX::enqueue(LTTO_IR_MULTIBYTE *structure) {
+	if(!multibyteBuffer.size && structure->size) {
+		multibyteBuffer = *structure;
 		tryAdvancingMultibyte();
 		return true;
 	}
 	return false;
 }
 
-bool LTTO_IRTX::enqueue(LTTO_IR signature) {
+bool LTTO_IRTX::enqueue(LTTO_IR *signature) {
 	if(!isBusy()) {
-		workingBuffer = signature;
+		workingBuffer = *signature;
 		step = 0;
 		busy = true;
 		return true;
