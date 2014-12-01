@@ -23,7 +23,7 @@ void LTTO_IRRX::reset(void) {
 }
 
 eLTTO_IRRX_PACKETREADY LTTO_IRRX::newSample(unsigned int qmsOn, unsigned int qmsOff) {
-	if(RX.newSample(qmsOn, qmsOff) {
+	if(RX.newSample(qmsOn, qmsOff)) {
 		//New raw packet
 		LTTO_IR_SIGNATURE temp;
 		if(RX.getSignature().convert(temp)) {
