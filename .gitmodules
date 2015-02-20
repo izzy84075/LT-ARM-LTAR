@@ -1,3 +1,0 @@
-[submodule "src/circular-buffer"]
-	path = src/circular-buffer
-	url = git@gitlab.meldaire.net:super-software-consortium/circular-buffer.git
