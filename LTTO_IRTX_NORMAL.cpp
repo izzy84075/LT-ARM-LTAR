@@ -6,7 +6,7 @@ LTTO_IRTX_NORMAL::LTTO_IRTX_NORMAL( void (*IRLEDON)(void), void (*IRLEDOFF)(void
 }
 
 void LTTO_IRTX_NORMAL::update_IRLED(ePIN_STATE state) {
-    if(state == HIGH) {
+    if(state == ePIN_STATE::HIGH) {
         (*LEDON)();
     } else {
         (*LEDOFF)();
