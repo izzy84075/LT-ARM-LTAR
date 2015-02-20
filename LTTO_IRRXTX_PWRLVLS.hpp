@@ -9,7 +9,7 @@ class LTTO_IRRXTX_PWRLVLS {
 		LTTO_IRRX RX;
 		LTTO_IRTX_PWRLVLS TX;
 
-		LTTO_IRRXTX_PWRLVLS( void (*HIGH_IRLEDON)(void), void (*LOW_IRLEDON)(void), void (*IRLEDSOFF)(void));
+		LTTO_IRRXTX_PWRLVLS();
 		void reset(void);
 		void LTTO_IRRXTX_1msTick(void);
 	private:

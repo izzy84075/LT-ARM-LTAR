@@ -27,7 +27,7 @@ class LTTO_IRTX {
 		unsigned int multibytePosition;
 		bool busy;
 
-        virtual void update_IRLED(ePIN_STATE state);
+        virtual void update_IRLED(ePIN_STATE state) = 0;
 
 		bool tryAdvancingMultibyte(void);
 };
