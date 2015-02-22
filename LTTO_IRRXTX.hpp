@@ -1,17 +1,14 @@
 #include "LTTO_IRRX.hpp"
-#include "LTTO_IRTX_NORMAL.hpp"
+#include "LTTO_IRTX.hpp"
 
 #ifndef LTTO_IRRXTX_H
 #define LTTO_IRRXTX_H
 
-class LTTO_IRRXTX {
+class LTTO_IRRXTX : public LTTO_IRRX, public LTTO_IRTX {
 	public:
-		LTTO_IRRX RX;
-		LTTO_IRTX_NORMAL TX;
-
-		LTTO_IRRXTX( void (*IRLEDON)(void), void (*IRLEDOFF)(void));
+		LTTO_IRRXTX();
 		void reset(void);
-		void LTTO_IRRXTX_1msTick(void);
+		void Tick1ms(void);
 	private:
 
 };

@@ -12,10 +12,10 @@ void LTTO_IRTX::reset(void) {
 	step = 0;
 	dataCounter = 0;
 	multibytePosition = 0;
-    update_IRLED(ePIN_STATE::LOW);
+    LTTO_IRTX_update_IRLED(ePIN_STATE::LOW);
 }
 
-void LTTO_IRTX::LTTO_IRTX_1msTick(void) {
+void LTTO_IRTX::Tick1ms(void) {
 	if(timer) {
 		timer--;
 	}
@@ -25,7 +25,7 @@ void LTTO_IRTX::LTTO_IRTX_1msTick(void) {
 			case 0:
 				//PRE-SYNC
 				//3ms on
-				update_IRLED(ePIN_STATE::HIGH);
+				LTTO_IRTX_update_IRLED(ePIN_STATE::HIGH);
 				timer = 3;
 
 				step++;
@@ -33,7 +33,7 @@ void LTTO_IRTX::LTTO_IRTX_1msTick(void) {
 			case 1:
 				//PRE-SYNC PAUSE
 				//6ms off
-				update_IRLED(ePIN_STATE::LOW);
+				LTTO_IRTX_update_IRLED(ePIN_STATE::LOW);
 				timer = 6;
 
 				step++;
@@ -41,7 +41,7 @@ void LTTO_IRTX::LTTO_IRTX_1msTick(void) {
 			case 2:
 				//SYNC
 				//3ms or 6ms on
-				update_IRLED(ePIN_STATE::HIGH);
+				LTTO_IRTX_update_IRLED(ePIN_STATE::HIGH);
 				switch(workingBuffer.headerType) {
 					case eLTTO_IR_HEADERTYPE::NORMAL:
 						timer = 3;
@@ -72,7 +72,7 @@ void LTTO_IRTX::LTTO_IRTX_1msTick(void) {
 			case 3:
 				//Data bit pause
 				//2ms off
-				update_IRLED(ePIN_STATE::LOW);
+				LTTO_IRTX_update_IRLED(ePIN_STATE::LOW);
 				timer = 2;
 
 				step++;
@@ -80,7 +80,7 @@ void LTTO_IRTX::LTTO_IRTX_1msTick(void) {
 			case 4:
 				//Data bit
 				//1ms or 2ms on
-				update_IRLED(ePIN_STATE::HIGH);
+				LTTO_IRTX_update_IRLED(ePIN_STATE::HIGH);
 
 				if(workingBuffer.data & 0x01) {
 					//This is a "One" bit
@@ -122,7 +122,7 @@ void LTTO_IRTX::LTTO_IRTX_1msTick(void) {
 				//Fall through into default: so that we can queue up another packet while waiting for the SFP to finish.
 			default:
 				//Either we just finished a packet or something went wrong. Turn the LED off(Just to be safe) and clean up.
-				update_IRLED(ePIN_STATE::LOW);
+				LTTO_IRTX_update_IRLED(ePIN_STATE::LOW);
 				busy = false;
 				workingBuffer.reset();
 				step = 0;

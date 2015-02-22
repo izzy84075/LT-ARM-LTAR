@@ -5,11 +5,13 @@
 #ifndef LTTO_IRTX_H
 #define LTTO_IRTX_H
 
+extern void LTTO_IRTX_update_IRLED(ePIN_STATE state);
+
 class LTTO_IRTX {
 	public:
 		LTTO_IRTX();
 		void reset(void);
-		void LTTO_IRTX_1msTick(void);
+		void Tick1ms(void);
 
 		bool enqueue(eLTTO_IR_SIGNATURETYPE sigType, uint16_t data);
 		bool enqueue(LTTO_IR_SIGNATURE &signature);
@@ -26,8 +28,6 @@ class LTTO_IRTX {
 		unsigned int dataCounter;
 		unsigned int multibytePosition;
 		bool busy;
-
-        virtual void update_IRLED(ePIN_STATE state) = 0;
 
 		bool tryAdvancingMultibyte(void);
 };

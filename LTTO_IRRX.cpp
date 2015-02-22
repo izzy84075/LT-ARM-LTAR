@@ -4,7 +4,7 @@ LTTO_IRRX::LTTO_IRRX(void) {
 	reset();
 }
 
-void LTTO_IRRX::LTTO_IRRX_1msTick(void) {
+void LTTO_IRRX::Tick1ms(void) {
 	if(multibyteBuffer.size && !multibyteComplete) {
 		//If we've started receiving a multibyte packet and it's not complete, increment the age.
 		multibyteAge++;
