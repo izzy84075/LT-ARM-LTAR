@@ -82,13 +82,13 @@ eLTTO_IRRX_PACKETREADY LTTO_IRRX::signaturesWaiting(void) {
 	bool signature = (signatureBuffer.sigType != eLTTO_IR_SIGNATURETYPE::INVALID);
 
 	if(signature && multibyteComplete) {
-		return BOTH;
+		return eLTTO_IRRX_PACKETREADY::BOTH;
 	} else if(signature) {
-		return SINGLE;
+		return eLTTO_IRRX_PACKETREADY::SINGLE;
 	} else if(multibyteComplete) {
-		return MULTIBYTE;
+		return eLTTO_IRRX_PACKETREADY::MULTIBYTE;
 	} else {
-		return NONE;
+		return eLTTO_IRRX_PACKETREADY::NONE;
 	}
 }
 
